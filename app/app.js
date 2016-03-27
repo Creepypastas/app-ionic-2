@@ -2,6 +2,7 @@ import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {GettingStartedPage} from './pages/getting-started/getting-started';
 import {ListPage} from './pages/list/list';
+import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 
 
 @App({
@@ -21,13 +22,11 @@ class MyApp {
 
     this.initializeApp();
 
-    // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Getting Started', component: GettingStartedPage },
-      { title: 'List', component: ListPage }
+      { title: 'Creepypastas', component: CreepypastasPage }
     ];
 
-    this.rootPage = GettingStartedPage;
+    this.rootPage = CreepypastasPage;
   }
 
   initializeApp() {
