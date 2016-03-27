@@ -6,9 +6,7 @@ import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 
 @App({
   templateUrl: 'build/app.html',
-  config: {
-    mode: 'md'
-  } // http://ionicframework.com/docs/v2/api/config/Config/
+  config: {} // http://ionicframework.com/docs/v2/api/config/Config/
 })
 class MyApp {
   static get parameters() {
