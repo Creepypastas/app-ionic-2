@@ -6,13 +6,9 @@
 </ion-navbar>
 
 <ion-content>
-
-  <div *ngIf="originItem" padding>
-    Seleccionaste: <b>{{originItem.post_title}}</b>
-  </div>
-
+  <ion-searchbar placeholder="Buscar creepypastas" hideCancelButton [(ngModel)]="searchQuery" (input)="filterCreepypastas($event)"></ion-searchbar>
   <ion-list>
-    <ion-item *ngFor="#item of creepypastas" (click)="itemTapped($event, item)">
+    <ion-item *ngFor="#item of filteredCreepypastas" (click)="requestDetailedCreepypasta($event, item)">
       <h2>{{item.post_title}}</h2>
       <h3>{{item.ID}}</h3>
       <p>{{item.url}}</p>

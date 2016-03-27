@@ -2,6 +2,8 @@ import {Page, NavController, NavParams} from 'ionic-angular';
 import {Http} from 'angular2/http';
 import 'rxjs/add/operator/map';
 
+import {SinglePostPage} from '../singlepost/singlepost';
+
 @Page({
   templateUrl: 'build/pages/creepypastas/creepypastas.html'
 })
@@ -15,14 +17,34 @@ export class CreepypastasPage {
     // If we navigated to this page, we will have an item available as a nav param
     this.originItem = navParams.get('item');
     this.creepypastas = [];
+    this.searchQuery = '';
 
     http.get('https://creepypastas.com/wdgts/mrddrs.creepypastas.com/publish.json')
       .map(res => res.json())
-      .subscribe(creepypastas => this.creepypastas = creepypastas);
+      .subscribe(creepypastas => {
+          this.creepypastas = creepypastas;
+          this.filteredCreepypastas = creepypastas;
+        }
+      );
   }
 
-  itemTapped(event, item) {
-    this.nav.push(CreepypastasPage, {
+  filterCreepypastas(searchbar) {
+    var q = searchbar.value.replace(/[_\W]/g, '').toLowerCase();
+    if (q == '') {
+      this.filteredCreepypastas = this.creepypastas;
+      return;
+    }
+
+    this.filteredCreepypastas = this.creepypastas.filter((item) => {
+      if (item.post_title.replace(/[_\W]/g, '').toLowerCase().indexOf(q) > -1) {
+        return true;
+      }
+      return false;
+    })
+  }
+
+  requestDetailedCreepypasta(event, item) {
+    this.nav.push(SinglePostPage, {
       item: item
     })
   }

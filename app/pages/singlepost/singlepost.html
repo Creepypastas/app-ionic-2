@@ -1,0 +1,19 @@
+<ion-navbar *navbar>
+  <button menuToggle>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+  <ion-title>Creepypastas</ion-title>
+</ion-navbar>
+
+<ion-content>
+
+  <div *ngIf="requestedItem" padding>
+    <article class="article-single">
+      <h2 class="article-title">{{requestedItem.post_title}}</h2>
+      <div class="article-content" [innerHTML]="requestedItem.post_content">
+      </div>
+    </article>
+  </div>
+
+
+</ion-content>
