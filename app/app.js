@@ -25,7 +25,7 @@ class MyApp {
       { title: 'Creepypastas', component: CreepypastasPage }
     ];
 
-    this.rootPage = CreepypastasPage;
+    this.rootPage = GettingStartedPage;
   }
 
   initializeApp() {
