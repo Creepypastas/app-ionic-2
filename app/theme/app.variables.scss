@@ -26,5 +26,21 @@ $colors: (
   danger:     #f53d3d,
   light:      #f4f4f4,
   dark:       #222,
+  darks:      #111,
   favorite:   #69BB7B
-);
+) !default;
+
+$text-color: #ccc !default;
+$background-color: #292929 !default;
+
+$list-text-color: $text-color !default;
+$list-background-color: $background-color !default;
+$list-border-color: #282828 !default;
+
+$link-color: map-get($colors, primary) !default;
+
+$toolbar-background-color: map-get($colors, darks) !default;
+$toolbar-border-color: #000 !default;
+$toolbar-text-color: $text-color !default;
+$toolbar-active-color: $link-color !default;
+$toolbar-inactive-color: #8c8c8c !default;

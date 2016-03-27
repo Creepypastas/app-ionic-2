@@ -1,4 +1,4 @@
-<ion-navbar *navbar>
+<ion-navbar *navbar darks>
   <button menuToggle>
     <ion-icon name="menu"></ion-icon>
   </button>
@@ -8,9 +8,12 @@
 <ion-content>
 
   <div *ngIf="requestedItem" padding>
-    <article class="article-single">
-      <h2 class="article-title">{{requestedItem.post_title}}</h2>
-      <div class="article-content" [innerHTML]="requestedItem.post_content">
+    <article class="article-dark">
+      <h4 class="article-dark-title">
+        <ion-icon name="document"></ion-icon>
+        {{requestedItem.post_title}}
+      </h4>
+      <div class="border-top article-content" [innerHTML]="requestedItem.post_content">
       </div>
     </article>
   </div>

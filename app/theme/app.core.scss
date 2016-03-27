@@ -21,3 +21,20 @@
 .slide-title{
   font-size: 42px;
 }
+.article-dark-title{
+  color: #BB2020;
+}
+.item-inner{
+  border-top: 1px solid #252525 !important;
+  border-bottom: 1px solid #252525 !important;
+}
+ion-list > .item:first-child{
+  border-top: 1px solid #252525 !important;
+}
+ion-list > .item:last-child{
+  border-bottom: 1px solid #252525 !important;
+}
+.searchbar-input{
+  background-color: #222222 !important;
+  color:#bbb;
+}
