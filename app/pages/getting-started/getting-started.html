@@ -1,20 +1,20 @@
-
-<ion-navbar *navbar>
-  <button menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
-  <ion-title>Getting Started</ion-title>
-</ion-navbar>
-
-
-<ion-content padding class="getting-started">
-
-  <h3>Getting Started</h3>
-  <p>
-     Get it started!
-  </p>
-  <p>
-    <button primary menuToggle>Toggle Menu</button>
-  </p>
-
+<ion-content class="tutorial-page app-login-page">
+  <ion-slides pager>
+    <ion-slide *ngFor="#slide of slides">
+      <img *ngIf="slide.image" [src]="slide.image" class="slide-image"/>
+      <h2 class="slide-title" [innerHTML]="slide.title"></h2>
+      <p *ngIf="slide.description" [innerHTML]="slide.description"></p>
+    </ion-slide>
+    <ion-slide>
+      <img src="https://app.creepypastas.com/favicon/s.128.png" class="slide-image"/>
+      <h2 class="slide-title">¿Te atreves?</h2>
+      <p>La <b>única app</b> oficial de @Creepypastas.</p>
+      <div style="width:90%; margin:auto">
+        <button danger block large (click)="goToCreepypastas()">
+          Entrar
+          <ion-icon name="arrow-forward"></ion-icon>
+        </button>
+      </div>
+    </ion-slide>
+  </ion-slides>
 </ion-content>

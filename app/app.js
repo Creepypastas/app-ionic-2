@@ -1,7 +1,6 @@
 import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {GettingStartedPage} from './pages/getting-started/getting-started';
-import {ListPage} from './pages/list/list';
 import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 
 
@@ -26,7 +25,7 @@ class MyApp {
       { title: 'Creepypastas', component: CreepypastasPage }
     ];
 
-    this.rootPage = CreepypastasPage;
+    this.rootPage = GettingStartedPage;
   }
 
   initializeApp() {
