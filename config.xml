@@ -33,6 +33,8 @@
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
+    <preference name="android-build-tool" value="gradle" />
+    <plugin name="cordova-plugin-admobpro" spec="~2.13.0" />
     <plugin name="cordova-plugin-device" spec="~1.1.1" />
     <plugin name="cordova-plugin-console" spec="~1.0.2" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.1" />
