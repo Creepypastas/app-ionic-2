@@ -1,5 +1,5 @@
 import {Page, NavController} from 'ionic-angular';
-import {CreepypastasPage} from '../creepypastas/creepypastas';
+import {CategoriasPage} from '../categorias/categorias';
 
 
 @Page({
@@ -25,6 +25,6 @@ export class GettingStartedPage {
   }
 
   goToCreepypastas() {
-    this.nav.setRoot(CreepypastasPage);
+    this.nav.setRoot(CategoriasPage);
   }
 }
