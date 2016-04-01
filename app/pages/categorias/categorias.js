@@ -16,10 +16,10 @@ export class CategoriasPage {
     this.nav = nav;
     this.creepypastasCategorias = [];
 
-    http.get('https://creepypastas.com/wp-json/wp/v2/categories')
+    http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/categories')
       .map(res => res.json())
-      .subscribe(categorias => {
-          this.creepypastasCategorias = categorias;
+      .subscribe(response => {
+          this.creepypastasCategorias = response.categories;
         }
       );
   }

@@ -8,6 +8,6 @@
   <ion-card *ngFor="#item of creepypastasCategorias" class="advanced-background" (click)="requestFilteredCreepypastas($event, item)">
     <img src="http://farm8.static.flickr.com/7017/6578285373_8015f0512b.jpg"/>
     <p class="advanced-background-title">{{item.name}}</p>
-    <p class="advanced-background-subtitle">{{item.count}} creepypastas</p>
+    <p class="advanced-background-subtitle">{{item.post_count}} creepypastas</p>
   </ion-card>
 </ion-content>
