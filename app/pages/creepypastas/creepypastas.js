@@ -14,7 +14,6 @@ export class CreepypastasPage {
 
   constructor(nav, navParams, http) {
     this.nav = nav;
-    this.originItem = navParams.get('item');
     this.searchObject = navParams.get('searchObject');
     this.creepypastas = JSON.parse( localStorage.getItem('creepypastas') || '[]' );
     this.searchQuery = '';
