@@ -3,7 +3,6 @@ import {StatusBar} from 'ionic-native';
 import {GettingStartedPage} from './pages/getting-started/getting-started';
 import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 
-
 @App({
   templateUrl: 'build/app.html',
   config: {} // http://ionicframework.com/docs/v2/api/config/Config/
@@ -16,7 +15,6 @@ class MyApp {
   constructor(app, platform) {
     this.app = app;
     this.platform = platform;
-
     this.initializeApp();
 
     this.pages = [

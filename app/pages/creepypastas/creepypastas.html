@@ -9,9 +9,8 @@
   <ion-searchbar placeholder="Buscar creepypastas" hideCancelButton [(ngModel)]="searchQuery" (input)="filterCreepypastas($event)"></ion-searchbar>
   <ion-list>
     <ion-item *ngFor="#item of filteredCreepypastas" (click)="requestDetailedCreepypasta($event, item)">
-      <h2>{{item.post_title}}</h2>
-      <h3>{{item.ID}}</h3>
-      <p>{{item.url}}</p>
+      <h2>{{item.title}}</h2>
+      <p>{{ stringToDate(item.date) | date:'mediumDate'}}</p>
       <ion-icon name='arrow-forward' item-right secondary></ion-icon>
     </ion-item>
   </ion-list>

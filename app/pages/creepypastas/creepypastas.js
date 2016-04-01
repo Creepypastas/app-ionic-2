@@ -16,14 +16,19 @@ export class CreepypastasPage {
     this.nav = nav;
     // If we navigated to this page, we will have an item available as a nav param
     this.originItem = navParams.get('item');
-    this.creepypastas = [];
+    this.creepypastas = JSON.parse( localStorage.getItem('creepypastas') || '[]' );
     this.searchQuery = '';
 
-    http.get('https://creepypastas.com/wdgts/mrddrs.creepypastas.com/publish.json')
+    http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100')
       .map(res => res.json())
       .subscribe(creepypastas => {
-          this.creepypastas = creepypastas;
-          this.filteredCreepypastas = creepypastas;
+          this.creepypastas = creepypastas.posts.filter((item) => {
+            if (typeof item.status !== 'undefined' && item.status === 'publish') {
+              return true;
+            }
+            return false;
+          })
+          this.filteredCreepypastas = this.creepypastas;
         }
       );
   }
@@ -41,6 +46,10 @@ export class CreepypastasPage {
       }
       return false;
     })
+  }
+
+  stringToDate(dateString) {
+    return new Date(dateString);
   }
 
   requestDetailedCreepypasta(event, item) {
