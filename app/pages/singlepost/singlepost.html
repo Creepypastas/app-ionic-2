@@ -11,9 +11,9 @@
     <article class="article-dark">
       <h4 class="article-dark-title">
         <ion-icon name="document"></ion-icon>
-        {{requestedItem.post_title}}
+        {{requestedItem[1].title}}
       </h4>
-      <div class="border-top article-content" [innerHTML]="requestedItem.post_content">
+      <div class="border-top article-content" [innerHTML]="requestedItem[1].content">
       </div>
     </article>
   </div>
