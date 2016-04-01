@@ -14,8 +14,7 @@ export class CreepypastasPage {
 
   constructor(nav, navParams, http) {
     this.nav = nav;
-    // If we navigated to this page, we will have an item available as a nav param
-    this.originItem = navParams.get('item');
+    this.searchObject = navParams.get('searchObject');
     this.creepypastas = [];
     this.searchQuery = '';
 

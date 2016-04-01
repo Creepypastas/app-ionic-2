@@ -7,6 +7,17 @@
 
 <ion-content>
   <ion-searchbar placeholder="Buscar creepypastas" hideCancelButton [(ngModel)]="searchQuery" (input)="filterCreepypastas($event)"></ion-searchbar>
+
+  <ion-card *ngIf="searchObject">
+    <ion-card-content>
+      <ion-card-title>
+        {{searchObject.name}}
+      </ion-card-title>
+      <div [innerHTML]="searchObject.description">
+      </div>
+    </ion-card-content>
+  </ion-card>
+
   <ion-list>
     <ion-item *ngFor="#item of filteredCreepypastas" (click)="requestDetailedCreepypasta($event, item)">
       <h2>{{item.post_title}}</h2>
