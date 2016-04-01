@@ -1,0 +1,13 @@
+<ion-navbar *navbar darks>
+  <button menuToggle>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+  <ion-title>Categorías</ion-title>
+</ion-navbar>
+<ion-content class="has-header components-demo cards-bg">
+  <ion-card *ngFor="#item of creepypastasCategorias" class="advanced-background" (click)="requestFilteredCreepypastas($event, item)">
+    <img src="http://farm8.static.flickr.com/7017/6578285373_8015f0512b.jpg"/>
+    <p class="advanced-background-title">{{item.name}}</p>
+    <p class="advanced-background-subtitle">{{item.count}} creepypastas</p>
+  </ion-card>
+</ion-content>

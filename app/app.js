@@ -2,6 +2,7 @@ import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {GettingStartedPage} from './pages/getting-started/getting-started';
 import {CreepypastasPage} from './pages/creepypastas/creepypastas';
+import {CategoriasPage} from './pages/categorias/categorias';
 
 @App({
   templateUrl: 'build/app.html',
@@ -18,6 +19,7 @@ class MyApp {
     this.initializeApp();
 
     this.pages = [
+      { title: 'Categorias', component: CategoriasPage },
       { title: 'Creepypastas', component: CreepypastasPage }
     ];
 
