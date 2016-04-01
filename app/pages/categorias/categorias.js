@@ -19,7 +19,16 @@ export class CategoriasPage {
     http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/categories')
       .map(res => res.json())
       .subscribe(response => {
-          this.creepypastasCategorias = response.categories;
+          this.creepypastasCategorias = response.categories.filter((item) => {
+            switch (item.ID) {
+              case 464:
+              case 396:
+              case 185:
+                return false;
+              default:
+                return true;
+            }
+          })
         }
       );
   }
