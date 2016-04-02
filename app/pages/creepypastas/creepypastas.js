@@ -18,8 +18,9 @@ export class CreepypastasPage {
     this.searchObject = navParams.get('searchObject');
     this.searchQuery = localStorage.getItem('searchQuery') || '';
 
-    this.creepypastasKV = eval( localStorage.getItem('creepypastas') || '[]' );
-    this.creepypastasMap = new Map(this.creepypastasKV);
+    this.creepypastasMap = JSON.parse( localStorage.getItem('creepypastas') || '{}' );
+    this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
+
     this.apiURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com';
     this.filterCreepypastas({value:this.searchQuery});
 
@@ -38,13 +39,13 @@ export class CreepypastasPage {
       .subscribe(creepypastas => {
           creepypastas.posts.filter((item) => {
             if (typeof item.status !== 'undefined' && item.status === 'publish') {
-              this.creepypastasMap.set(item.ID, item);
+              this.creepypastasMap[item.ID] = item;
               return true;
             }
             return false;
           })
-          localStorage.setItem('creepypastas', uneval([...this.creepypastasMap]));
-          this.creepypastasKV = eval( localStorage.getItem('creepypastas') || '[]' );
+          localStorage.setItem('creepypastas', JSON.stringify(this.creepypastasMap));
+          this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
           this.filterCreepypastas({value:this.searchQuery});
         }
       );
@@ -67,6 +68,16 @@ export class CreepypastasPage {
       return true;
     })
 
+  }
+
+  objTo2dArray(obj){
+    let arr = [];
+    for (var id in obj) {
+      if (obj.hasOwnProperty(id)) {
+        arr.push([ id, this.creepypastasMap[id] ]);
+      }
+    }
+    return arr;
   }
 
   itemHasCategory(item,categoryID) {
