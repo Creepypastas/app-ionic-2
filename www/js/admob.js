@@ -18,12 +18,10 @@ if( /(android)/i.test(navigator.userAgent) ) {
 
 if(( /(ipad|iphone|ipod|android|windows phone)/i.test(navigator.userAgent) )) {
     document.addEventListener('deviceready', initApp, false);
-} else {
-    initApp();
 }
 
 function initApp() {
-    if (! AdMob ) { alert( 'admob plugin not ready' ); return; }
+    if (! AdMob ) { console.error( 'admob plugin not ready' ); return; }
 
     AdMob.createBanner( {
         adId: admobid.banner,
