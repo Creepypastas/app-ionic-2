@@ -20,7 +20,7 @@
 
   <ion-list>
     <ion-item *ngFor="#item of filteredCreepypastas" (click)="requestDetailedCreepypasta($event, item)">
-      <h2>{{item[1].title}}</h2>
+      <h2 [innerHTML]="item[1].title"></h2>
       <p>{{ stringToDate(item[1].date) | date:'mediumDate'}}</p>
       <ion-icon name='arrow-forward' item-right secondary></ion-icon>
     </ion-item>
