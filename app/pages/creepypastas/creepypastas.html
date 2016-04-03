@@ -11,7 +11,7 @@
   <ion-card *ngIf="searchObject">
     <ion-card-content>
       <ion-card-title>
-        {{searchObject.name}}
+        <span secondary>{{searchObject.name}}</span>
       </ion-card-title>
       <div [innerHTML]="searchObject.description">
       </div>
