@@ -95,6 +95,14 @@ export class CreepypastasPage {
     return new Date(dateString);
   }
 
+  dateFormat(dateString, dateFormat) {
+    var d = new Date(dateString);
+    switch (dateFormat) {
+      default:
+        return d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate();
+    }
+  }
+
   requestDetailedCreepypasta(event, item) {
     this.nav.push(SinglePostPage, {
       item: item
