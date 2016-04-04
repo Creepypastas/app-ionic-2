@@ -69,10 +69,18 @@ export class CreepypastasService {
   }
 
   loadCreepypastas(searchCriteria) {
+    if (!searchCriteria){
+      searchCriteria = {
+        query: '',
+        categoryID: false,
+        forceLocal: false,
+      };
+    }
+
     var deltaTime = (new Date()).getTime() - (this.lastUpdated.creepypastas || 0);
     deltaTime = (Math.abs(deltaTime)/36e5);
 
-    if (this.creepypastasMap && deltaTime < 1) {
+    if (searchCriteria.forceLocal || (this.creepypastasMap && deltaTime < 1)) {
       this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
       console.log("app::creepypastas from localStorage");
       return Promise.resolve(this.filterCreepypastas(searchCriteria));
@@ -102,17 +110,11 @@ export class CreepypastasService {
   }
 
   filterCreepypastas(searchCriteria) {
-    if (!searchCriteria){
-      searchCriteria = {
-        query: '',
-        categoryID: false
-      };
-    }
-
     console.log(searchCriteria);
 
-    var q = searchCriteria.query.replace(/[_\W]/g, '').toLowerCase();
+    var q = (searchCriteria.query || '');
     localStorage.setItem('searchQuery', q);
+    q = q.replace(/[_\W]/g, '').toLowerCase();
 
     var filteredCreepypastas = this.creepypastasKV.filter((item) => {
       if (q === '' && !searchCriteria.categoryID){
