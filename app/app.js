@@ -41,6 +41,7 @@ class MyApp {
 
   loadCreepypastasData() {
     this.creepypastasService.loadCats();
+    this.creepypastasService.loadCreepypastas();
   }
 
   openPage(page) {

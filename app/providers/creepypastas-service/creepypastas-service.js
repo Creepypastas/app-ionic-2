@@ -68,4 +68,67 @@ export class CreepypastasService {
     });
   }
 
+  loadCreepypastas() {
+    var deltaTime = (new Date()).getTime() - (this.lastUpdated.creepypastas || 0);
+    deltaTime = (Math.abs(deltaTime)/36e5);
+
+    if (this.creepypastasMap && deltaTime < 1) {
+      this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
+      console.log("app::creepypastas from localStorage");
+      return Promise.resolve(this.creepypastasKV);
+    }
+
+    return new Promise(resolve => {
+      this.http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100')
+        .map(res => res.json())
+        .subscribe(response => {
+          response.posts.filter((item) => {
+            if (typeof item.status !== 'undefined' && item.status === 'publish') {
+              this.creepypastasMap[item.ID] = item;
+              return true;
+            }
+            return false;
+          });
+          localStorage.setItem('creepypastas', JSON.stringify(this.creepypastasMap));
+
+          this.lastUpdated.creepypastas = ( (new Date()).getTime() );
+          localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
+
+          this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
+          //this.filterCreepypastas({value:this.searchQuery});
+          console.log("app::creepypastas from json api");
+          resolve(this.creepypastasKV);
+        });
+    });
+  }
+
+  filterCreepypastas(searchbar) {
+    var q = searchbar.value.replace(/[_\W]/g, '').toLowerCase();
+    localStorage.setItem('searchQuery', q);
+
+    this.filteredCreepypastas = this.creepypastasKV.filter((item) => {
+      if (q === '' && !this.searchObject){
+        return true;
+      }
+      if (item[1].title.replace(/[_\W]/g, '').toLowerCase().indexOf(q) <= -1) {
+        return false;
+      }
+      if (this.searchObject && !this.itemHasCategory(item[1], this.searchObject.ID)){
+        return false;
+      }
+      return true;
+    });
+  }
+
+  itemHasCategory(item,categoryID) {
+    for (var cat in item.categories) {
+      if (item.categories.hasOwnProperty(cat)) {
+        if(item.categories[cat].ID === categoryID){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
 }
