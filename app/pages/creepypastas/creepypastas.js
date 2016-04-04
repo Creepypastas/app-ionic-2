@@ -35,7 +35,6 @@ export class CreepypastasPage {
 
   filterCreepypastas(){
     var creepypastasPageSelf = this;
-
     var searchCriteria = {
       query: this.searchQuery
     }
@@ -49,6 +48,14 @@ export class CreepypastasPage {
     creepypastasPromise.then(function(filteredCreepypastasKV) {
       creepypastasPageSelf.filteredCreepypastas = filteredCreepypastasKV;
     });
+
+    searchCriteria.forceLocal = true;
+
+    var creepypastasLocalPromise = this.creepypastasService.loadCreepypastas(searchCriteria);
+    creepypastasLocalPromise.then(function(filteredCreepypastasKV) {
+      creepypastasPageSelf.filteredCreepypastas = filteredCreepypastasKV;
+    });
+
 
   }
 
