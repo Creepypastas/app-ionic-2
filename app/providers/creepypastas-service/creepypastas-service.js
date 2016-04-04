@@ -35,7 +35,7 @@ export class CreepypastasService {
     var deltaTime = (new Date()).getTime() - (this.lastUpdated.categories || 0);
     deltaTime = (Math.abs(deltaTime)/36e5);
 
-    if (this.creepypastasCategoriasMap && deltaTime < 12) {
+    if (this.creepypastasCategoriasMap && deltaTime < 24) {
       this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
       console.log("app::categories from localStorage");
       return Promise.resolve(this.creepypastasCategoriasKV);
@@ -60,7 +60,6 @@ export class CreepypastasService {
 
           this.lastUpdated.categories = ( (new Date()).getTime() );
           localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
-
           this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
           console.log("app:categories from json api");
           resolve(this.creepypastasCategoriasKV);
@@ -87,7 +86,7 @@ export class CreepypastasService {
       return Promise.resolve(this.filterCreepypastas(searchCriteria));
     }
 
-    var requestURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100';
+    var requestURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100&fields=ID,title,content,date,categories,status';
     if(searchCriteria.categorySlug){
       requestURL+= '&category=' + searchCriteria.categorySlug;
     }
@@ -104,10 +103,8 @@ export class CreepypastasService {
             return false;
           });
           localStorage.setItem('creepypastas', JSON.stringify(this.creepypastasMap));
-
           this.lastUpdated[searchCriteria.categorySlug || 'creepypastas'] = ( (new Date()).getTime() );
           localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
-
           this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
           console.log("app::creepypastas from json api");
           resolve(this.filterCreepypastas(searchCriteria));
