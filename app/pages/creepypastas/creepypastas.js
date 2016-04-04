@@ -42,6 +42,7 @@ export class CreepypastasPage {
 
     if(this.searchObject){
       searchCriteria.categoryID = this.searchObject.ID;
+      searchCriteria.categorySlug = this.searchObject.slug;
     }
 
     var creepypastasPromise = this.creepypastasService.loadCreepypastas(searchCriteria);

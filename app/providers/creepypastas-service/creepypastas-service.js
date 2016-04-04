@@ -77,7 +77,8 @@ export class CreepypastasService {
       };
     }
 
-    var deltaTime = (new Date()).getTime() - (this.lastUpdated.creepypastas || 0);
+    var lastUpdated = this.lastUpdated[searchCriteria.categorySlug || 'creepypastas'];
+    var deltaTime = (new Date()).getTime() - (lastUpdated || 0);
     deltaTime = (Math.abs(deltaTime)/36e5);
 
     if (searchCriteria.forceLocal || (this.creepypastasMap && deltaTime < 1)) {
@@ -86,8 +87,13 @@ export class CreepypastasService {
       return Promise.resolve(this.filterCreepypastas(searchCriteria));
     }
 
+    var requestURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100';
+    if(searchCriteria.categorySlug){
+      requestURL+= '&category=' + searchCriteria.categorySlug;
+    }
+
     return new Promise(resolve => {
-      this.http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100')
+      this.http.get(requestURL)
         .map(res => res.json())
         .subscribe(response => {
           response.posts.filter((item) => {
@@ -99,7 +105,7 @@ export class CreepypastasService {
           });
           localStorage.setItem('creepypastas', JSON.stringify(this.creepypastasMap));
 
-          this.lastUpdated.creepypastas = ( (new Date()).getTime() );
+          this.lastUpdated[searchCriteria.categorySlug || 'creepypastas'] = ( (new Date()).getTime() );
           localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
 
           this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
