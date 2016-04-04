@@ -68,14 +68,14 @@ export class CreepypastasService {
     });
   }
 
-  loadCreepypastas() {
+  loadCreepypastas(searchCriteria) {
     var deltaTime = (new Date()).getTime() - (this.lastUpdated.creepypastas || 0);
     deltaTime = (Math.abs(deltaTime)/36e5);
 
     if (this.creepypastasMap && deltaTime < 1) {
       this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
       console.log("app::creepypastas from localStorage");
-      return Promise.resolve(this.creepypastasKV);
+      return Promise.resolve(this.filterCreepypastas(searchCriteria));
     }
 
     return new Promise(resolve => {
@@ -95,29 +95,39 @@ export class CreepypastasService {
           localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
 
           this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
-          //this.filterCreepypastas({value:this.searchQuery});
           console.log("app::creepypastas from json api");
-          resolve(this.creepypastasKV);
+          resolve(this.filterCreepypastas(searchCriteria));
         });
     });
   }
 
-  filterCreepypastas(searchbar) {
-    var q = searchbar.value.replace(/[_\W]/g, '').toLowerCase();
+  filterCreepypastas(searchCriteria) {
+    if (!searchCriteria){
+      searchCriteria = {
+        query: '',
+        categoryID: false
+      };
+    }
+
+    console.log(searchCriteria);
+
+    var q = searchCriteria.query.replace(/[_\W]/g, '').toLowerCase();
     localStorage.setItem('searchQuery', q);
 
-    this.filteredCreepypastas = this.creepypastasKV.filter((item) => {
-      if (q === '' && !this.searchObject){
+    var filteredCreepypastas = this.creepypastasKV.filter((item) => {
+      if (q === '' && !searchCriteria.categoryID){
         return true;
       }
       if (item[1].title.replace(/[_\W]/g, '').toLowerCase().indexOf(q) <= -1) {
         return false;
       }
-      if (this.searchObject && !this.itemHasCategory(item[1], this.searchObject.ID)){
+      if (searchCriteria.categoryID && !this.itemHasCategory(item[1], searchCriteria.categoryID)){
         return false;
       }
       return true;
     });
+
+    return filteredCreepypastas;
   }
 
   itemHasCategory(item,categoryID) {

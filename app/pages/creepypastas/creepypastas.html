@@ -6,7 +6,7 @@
 </ion-navbar>
 
 <ion-content>
-  <ion-searchbar placeholder="Buscar creepypastas" hideCancelButton [(ngModel)]="searchQuery" (input)="filterCreepypastas($event)"></ion-searchbar>
+  <ion-searchbar placeholder="Buscar creepypastas" hideCancelButton [(ngModel)]="searchQuery" (input)="filterCreepypastas()"></ion-searchbar>
 
   <ion-card *ngIf="searchObject">
     <ion-card-content>

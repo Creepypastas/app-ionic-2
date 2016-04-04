@@ -18,13 +18,7 @@ export class CreepypastasPage {
     this.searchQuery = localStorage.getItem('searchQuery') || '';
 
     this.filteredCreepypastas = [];
-
-    var creepypastasPageSelf = this;
-    var creepypastasPromise = this.creepypastasService.loadCreepypastas();
-    creepypastasPromise.then(function(filteredCreepypastasKV) {
-      creepypastasPageSelf.filteredCreepypastas = filteredCreepypastasKV;
-    });
-
+    this.filterCreepypastas();
   }
 
   stringToDate(dateString) {
@@ -37,6 +31,24 @@ export class CreepypastasPage {
       default:
         return d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate();
     }
+  }
+
+  filterCreepypastas(){
+    var creepypastasPageSelf = this;
+
+    var searchCriteria = {
+      query: this.searchQuery
+    }
+
+    if(this.searchObject){
+      searchCriteria.categoryID = this.searchObject.ID;
+    }
+
+    var creepypastasPromise = this.creepypastasService.loadCreepypastas(searchCriteria);
+    creepypastasPromise.then(function(filteredCreepypastasKV) {
+      creepypastasPageSelf.filteredCreepypastas = filteredCreepypastasKV;
+    });
+
   }
 
   requestDetailedCreepypasta(event, item) {
