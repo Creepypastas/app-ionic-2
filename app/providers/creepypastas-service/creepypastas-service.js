@@ -81,7 +81,7 @@ export class CreepypastasService {
     var deltaTime = (new Date()).getTime() - (lastUpdated || 0);
     deltaTime = (Math.abs(deltaTime)/36e5);
 
-    if (searchCriteria.forceLocal || (this.creepypastasMap && deltaTime < 1)) {
+    if (searchCriteria.forceLocal || (this.creepypastasMap && deltaTime < 12)) {
       this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
       console.log("app::creepypastas from localStorage");
       return Promise.resolve(this.filterCreepypastas(searchCriteria));

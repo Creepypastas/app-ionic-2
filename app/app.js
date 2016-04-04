@@ -41,8 +41,17 @@ class MyApp {
   }
 
   loadCreepypastasData() {
-    this.creepypastasService.loadCats();
-    this.creepypastasService.loadCreepypastas();
+    var appSelf = this;
+    var catsProm = this.creepypastasService.loadCats();
+    var catProms = [];
+    catsProm.then(function(catsKV) {
+      for (var i = 0; i < catsKV.length; i++) {
+        catProms[i] = appSelf.creepypastasService.loadCreepypastas({
+          categoryID:catsKV[i][1].ID,
+          categorySlug:catsKV[i][1].slug
+        });
+      }
+    });
   }
 
   openPage(page) {
