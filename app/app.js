@@ -1,3 +1,4 @@
+import 'es5-shim';
 import 'es6-shim';
 import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
