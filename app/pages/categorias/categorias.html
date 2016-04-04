@@ -5,7 +5,7 @@
   <ion-title>Categorías</ion-title>
 </ion-navbar>
 <ion-content class="has-header components-demo cards-bg">
-  <ion-card *ngFor="#item of creepypastasCategoriasKV" class="advanced-background" (click)="requestFilteredCreepypastas($event, item[1])">
+  <ion-card *ngFor="#item of creepypastasCategories.filtered" class="advanced-background" (click)="requestFilteredCreepypastas($event, item[1])">
     <img src="http://farm8.static.flickr.com/7017/6578285373_8015f0512b.jpg"/>
     <p class="advanced-background-title">{{item[1].name}}</p>
     <p class="advanced-background-subtitle">{{item[1].post_count}} creepypastas</p>

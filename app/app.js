@@ -1,23 +1,27 @@
 import 'es6-shim';
 import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
+import {CreepypastasService} from './providers/creepypastas-service/creepypastas-service';
 import {GettingStartedPage} from './pages/getting-started/getting-started';
 import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 import {CategoriasPage} from './pages/categorias/categorias';
 
 @App({
   templateUrl: 'build/app.html',
-  config: {} // http://ionicframework.com/docs/v2/api/config/Config/
+  config: {},
+  providers: [CreepypastasService]
 })
 class MyApp {
   static get parameters() {
-    return [[IonicApp], [Platform]];
+    return [[IonicApp], [Platform], [CreepypastasService]];
   }
 
-  constructor(app, platform) {
+  constructor(app, platform, creepypastasService) {
     this.app = app;
     this.platform = platform;
+    this.creepypastasService = creepypastasService;
     this.initializeApp();
+    this.loadCreepypastasData();
 
     this.pages = [
       { title: 'Categorias', component: CategoriasPage },
@@ -33,6 +37,10 @@ class MyApp {
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
     });
+  }
+
+  loadCreepypastasData() {
+    this.creepypastasService.loadCats();
   }
 
   openPage(page) {

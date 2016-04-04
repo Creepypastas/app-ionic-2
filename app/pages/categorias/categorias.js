@@ -1,6 +1,5 @@
 import {Page, NavController, NavParams} from 'ionic-angular';
-import {Http} from 'angular2/http';
-import 'rxjs/add/operator/map';
+import {CreepypastasService} from '../../providers/creepypastas-service/creepypastas-service';
 
 import {CreepypastasPage} from '../creepypastas/creepypastas';
 
@@ -9,42 +8,20 @@ import {CreepypastasPage} from '../creepypastas/creepypastas';
 })
 export class CategoriasPage {
   static get parameters() {
-    return [[NavController], [NavParams], [Http]];
+    return [[NavController], [NavParams], [CreepypastasService]];
   }
 
-  constructor(nav, navParams, http) {
+  constructor(nav, navParams, creepypastasService) {
     this.nav = nav;
-
-    this.creepypastasCategoriasMap = JSON.parse( localStorage.getItem('creepypastasCategorias') || '{}' );
-    this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
-    http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/categories')
-      .map(res => res.json())
-      .subscribe(response => {
-          response.categories.filter((item) => {
-            switch (item.ID) {
-              case 464:
-              case 396:
-              case 185:
-                return false;
-              default:
-                this.creepypastasCategoriasMap[item.ID] = item;
-                return true;
-            }
-          })
-          localStorage.setItem('creepypastasCategorias', JSON.stringify(this.creepypastasCategoriasMap));
-          this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
-        }
-      );
-  }
-
-  objTo2dArray(obj){
-    let arr = [];
-    for (var id in obj) {
-      if (obj.hasOwnProperty(id)) {
-        arr.push([ id, this.creepypastasCategoriasMap[id] ]);
-      }
-    }
-    return arr;
+    this.creepypastasService = creepypastasService;
+    this.creepypastasCategories = {
+      filtered: []
+    };
+    var categoriesPageSelf = this;
+    var categoriesPromise = this.creepypastasService.loadCats();
+    categoriesPromise.then(function(catsKV) {
+      categoriesPageSelf.creepypastasCategories.filtered = catsKV;
+    });
   }
 
   requestFilteredCreepypastas(event, item) {
