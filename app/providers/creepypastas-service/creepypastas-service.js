@@ -44,7 +44,8 @@ export class CreepypastasService {
     return new Promise(resolve => {
       this.http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/categories')
         .map(res => res.json())
-        .subscribe(response => {
+        .subscribe(
+        response => {
           response.categories.filter((item) => {
             switch (item.ID) {
               case 464:
@@ -63,7 +64,13 @@ export class CreepypastasService {
           this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
           console.log("app:categories from json api");
           resolve(this.creepypastasCategoriasKV);
-        });
+        },
+        error => {
+          this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
+          console.log("app:categories fallback from localStorage");
+          resolve(this.creepypastasCategoriasKV);
+        }
+      );
     });
   }
 
@@ -94,7 +101,8 @@ export class CreepypastasService {
     return new Promise(resolve => {
       this.http.get(requestURL)
         .map(res => res.json())
-        .subscribe(response => {
+        .subscribe(
+        response => {
           response.posts.filter((item) => {
             if (typeof item.status !== 'undefined' && item.status === 'publish') {
               this.creepypastasMap[item.ID] = item;
@@ -108,7 +116,13 @@ export class CreepypastasService {
           this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
           console.log("app::creepypastas from json api");
           resolve(this.filterCreepypastas(searchCriteria));
-        });
+        },
+        error => {
+          this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
+          console.log("app::creepypastas fallback from localStorage");
+          resolve(this.filterCreepypastas(searchCriteria));
+        }
+      );
     });
   }
 
