@@ -93,7 +93,7 @@ export class CreepypastasService {
       return Promise.resolve(this.filterCreepypastas(searchCriteria));
     }
 
-    var requestURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100&fields=ID,title,content,date,categories,status';
+    var requestURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100&fields=ID,title,date,categories,status';
     if(searchCriteria.categorySlug){
       requestURL+= '&category=' + searchCriteria.categorySlug;
     }
@@ -105,6 +105,7 @@ export class CreepypastasService {
         response => {
           response.posts.filter((item) => {
             if (typeof item.status !== 'undefined' && item.status === 'publish') {
+              item.categories = sanitizeCategories(item.categories);
               this.creepypastasMap[item.ID] = item;
               return true;
             }
@@ -159,5 +160,25 @@ export class CreepypastasService {
     }
     return false;
   }
+
+  sanitizeObj(object,wantedFieldsArray) {
+    obj = {};
+    for (var i=0; i<wantedFieldsArray.length; i++) {
+      if (object.hasOwnProperty(wantedFieldsArray[i])) {
+        obj[wantedFieldsArray[i]] = object[wantedFieldsArray[i]];
+      }
+    }
+    return obj;
+  }
+
+  sanitizeCategories(categoriesMap) {
+    for (var cat in categoriesMap) {
+      if (categoriesMap.hasOwnProperty(cat)) {
+        categoriesMap[cat] = sanitizeObj(categoriesMap[cat],['ID','name']);
+      }
+    }
+    return categoriesMap;
+  }
+
 
 }
