@@ -22,7 +22,6 @@ class MyApp {
     this.platform = platform;
     this.creepypastasService = creepypastasService;
     this.initializeApp();
-    this.loadCreepypastasData();
 
     this.pages = [
       { title: 'Categorias', component: CategoriasPage },
@@ -37,20 +36,6 @@ class MyApp {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
-    });
-  }
-
-  loadCreepypastasData() {
-    var appSelf = this;
-    var catsProm = this.creepypastasService.loadCats();
-    var catProms = [];
-    catsProm.then(function(catsKV) {
-      for (var i = 0; i < catsKV.length; i++) {
-        catProms[i] = appSelf.creepypastasService.loadCreepypastas({
-          categoryID:catsKV[i][1].ID,
-          categorySlug:catsKV[i][1].slug
-        });
-      }
     });
   }
 

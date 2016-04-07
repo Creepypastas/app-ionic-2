@@ -12,12 +12,29 @@ export class CreepypastasService {
     this.creepypastasMap = null;
     this.creepypastasCategoriasMap = null;
     this.lastUpdated = null;
+    this.startupLoad();
+  }
+
+  startupLoad() {
     this.loadFromLocalStorage();
+    if (null === this.creepypastasCategoriasMap || null === this.creepypastasMap){
+      var servSelf = this;
+      var catsProm = this.loadCats();
+      catsProm.then(function(catsKV) {
+        for (var i = 0; i < catsKV.length; i++) {
+          servSelf.loadCreepypastas({
+            categoryID:catsKV[i][1].ID,
+            categorySlug:catsKV[i][1].slug,
+            thisIsPreload:true
+          });
+        }
+      });
+    }
   }
 
   loadFromLocalStorage() {
-    this.creepypastasMap = JSON.parse( localStorage.getItem('creepypastas') || '{}' );
-    this.creepypastasCategoriasMap = JSON.parse( localStorage.getItem('creepypastasCategorias') || '{}' );
+    this.creepypastasMap = JSON.parse( localStorage.getItem('creepypastas') ) || null;
+    this.creepypastasCategoriasMap = JSON.parse( localStorage.getItem('creepypastasCategorias') ) || null;
     this.lastUpdated = JSON.parse(localStorage.getItem('lastUpdated')) || {categories:0,creepypastas:0};
   }
 
@@ -37,15 +54,16 @@ export class CreepypastasService {
 
     if (this.creepypastasCategoriasMap && deltaTime < 24) {
       this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
-      console.log("app::categories from localStorage");
+      console.log("app::categories from localStorage::deltaTime");
       return Promise.resolve(this.creepypastasCategoriasKV);
     }
 
     return new Promise(resolve => {
-      this.http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/categories')
+      this.http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/categories?fields=ID,slug,name,post_count,description')
         .map(res => res.json())
         .subscribe(
         response => {
+          this.creepypastasCategoriasMap = this.creepypastasCategoriasMap || {};
           response.categories.filter((item) => {
             switch (item.ID) {
               case 464:
@@ -57,22 +75,34 @@ export class CreepypastasService {
                 return true;
             }
           });
-          localStorage.setItem('creepypastasCategorias', JSON.stringify(this.creepypastasCategoriasMap));
-
+          console.log("app::categories from json api");
           this.lastUpdated.categories = ( (new Date()).getTime() );
           localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
-          this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
-          console.log("app:categories from json api");
-          resolve(this.creepypastasCategoriasKV);
         },
         error => {
-          this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
-          console.log("app:categories fallback from localStorage");
-          resolve(this.creepypastasCategoriasKV);
+          if(null === this.creepypastasCategoriasMap){
+            this.creepypastasCategoriasMap = {14980:{name:"Doomsdaypastas",slug:"doomsdaypastas",post_count:6,description:"Creepypastas del fin del mundo o apocalípticas. Aunque no son creepypastas como tal, pues al contener argumentos tan devastadores la duda de si pasó realmente no está presente, sigue siendo un subgénero atesorado por nuestros usuarios. <i>Doomsday</i> es gringo para «día del juicio». ",}};
+            console.log("app::categories fallback from preloaded");
+          } else{
+            console.log("app::categories fallback from localStorage");
+          }
+          resolve(this.storeAndComplete('creepypastasCategorias',this.creepypastasCategoriasMap));
+        },
+        () => {
+          console.log("app::categories complete");
+          resolve(this.storeAndComplete('creepypastasCategorias',this.creepypastasCategoriasMap));
         }
       );
     });
   }
+
+  storeAndComplete(name,map){
+    console.log('app::resolve::' + name + 'KV');
+    localStorage.setItem(name, JSON.stringify(map));
+    this[name+'KV'] = this.objTo2dArray(map);
+    return this[name+'KV'];
+  }
+
 
   loadCreepypastas(searchCriteria) {
     if (!searchCriteria){
@@ -80,6 +110,7 @@ export class CreepypastasService {
         query: '',
         categoryID: false,
         forceLocal: false,
+        thisIsPreload: false
       };
     }
 
@@ -94,6 +125,9 @@ export class CreepypastasService {
     }
 
     var requestURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100&fields=ID,title,date,categories,status';
+    if(!searchCriteria.thisIsPreload){
+      requestURL+= ',content';
+    }
     if(searchCriteria.categorySlug){
       requestURL+= '&category=' + searchCriteria.categorySlug;
     }
@@ -104,24 +138,32 @@ export class CreepypastasService {
         .subscribe(
         response => {
           response.posts.filter((item) => {
+            this.creepypastasMap = this.creepypastasMap || {};
             if (typeof item.status !== 'undefined' && item.status === 'publish') {
-              item.categories = sanitizeCategories(item.categories);
+              item.categories = this.sanitizeCategories(item.categories);
               this.creepypastasMap[item.ID] = item;
               return true;
             }
             return false;
           });
           localStorage.setItem('creepypastas', JSON.stringify(this.creepypastasMap));
-          this.lastUpdated[searchCriteria.categorySlug || 'creepypastas'] = ( (new Date()).getTime() );
-          localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
+          if(!searchCriteria.thisIsPreload) {
+            this.lastUpdated[searchCriteria.categorySlug || 'creepypastas'] = ( (new Date()).getTime() );
+            localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
+          }
           this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
           console.log("app::creepypastas from json api");
           resolve(this.filterCreepypastas(searchCriteria));
         },
         error => {
+          this.creepypastasMap = this.creepypastasMap || {};
+          console.error(error);
           this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
           console.log("app::creepypastas fallback from localStorage");
           resolve(this.filterCreepypastas(searchCriteria));
+        },
+        () => {
+          console.log("app::creepypastas complete");
         }
       );
     });
@@ -162,7 +204,7 @@ export class CreepypastasService {
   }
 
   sanitizeObj(object,wantedFieldsArray) {
-    obj = {};
+    var obj = {};
     for (var i=0; i<wantedFieldsArray.length; i++) {
       if (object.hasOwnProperty(wantedFieldsArray[i])) {
         obj[wantedFieldsArray[i]] = object[wantedFieldsArray[i]];
@@ -174,7 +216,7 @@ export class CreepypastasService {
   sanitizeCategories(categoriesMap) {
     for (var cat in categoriesMap) {
       if (categoriesMap.hasOwnProperty(cat)) {
-        categoriesMap[cat] = sanitizeObj(categoriesMap[cat],['ID','name']);
+        categoriesMap[cat] = this.sanitizeObj(categoriesMap[cat],['ID']);
       }
     }
     return categoriesMap;
