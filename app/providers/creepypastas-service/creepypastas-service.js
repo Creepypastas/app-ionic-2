@@ -45,11 +45,11 @@ export class CreepypastasService {
   loadFromPreloadedData(){
     console.debug("app::loadFromPreloadedData");
     if (null === this.creepypastasCategoriasMap){
-      this.creepypastasCategoriasMap = require("./categories");
+      this.creepypastasCategoriasMap = require("./categories") || null;
       //console.table(this.creepypastasCategoriasMap);
     }
     if (null === this.creepypastasMap){
-      this.creepypastasMap = require("./creepypastas");
+      this.creepypastasMap = require("./creepypastas") || null;
       //console.debug(this.creepypastasCategoriasMap);
     }
   }
