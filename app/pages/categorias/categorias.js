@@ -25,8 +25,6 @@ export class CategoriasPage {
   }
 
   requestFilteredCreepypastas(event, item) {
-    this.nav.push(CreepypastasPage, {
-      searchObject: item
-    })
+    this.nav.setRoot(CreepypastasPage, {searchObject:item});
   }
 }

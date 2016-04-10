@@ -6,6 +6,8 @@ import {CreepypastasService} from './providers/creepypastas-service/creepypastas
 import {GettingStartedPage} from './pages/getting-started/getting-started';
 import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 import {CategoriasPage} from './pages/categorias/categorias';
+import {enableProdMode} from 'angular2/core';
+enableProdMode();
 
 @App({
   templateUrl: 'build/app.html',

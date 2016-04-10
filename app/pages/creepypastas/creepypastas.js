@@ -78,7 +78,7 @@ doRefresh(){
         console.debug("forceLocal false listo. :)")
       }
 
-      if(showAlerts === true){
+      if(showAlerts === true || !secondRound){
         setTimeout(function() {
           console.log("creepypastas updated");
           cPSelf.isLoading = false;

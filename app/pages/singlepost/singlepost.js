@@ -18,8 +18,11 @@ export class SinglePostPage {
 
   goRandom(){
     console.log("let's go random");
-    this.requestedItem = this.creepypastasService.getRandomCreepypasta();
-    this.ensureSingleIsLoaded();
+    var randomItem = this.creepypastasService.getRandomCreepypasta();
+    this.nav.push(SinglePostPage, {
+      item: randomItem
+    })
+    //this.ensureSingleIsLoaded();
   }
 
   ensureSingleIsLoaded(){
