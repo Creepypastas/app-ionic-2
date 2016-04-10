@@ -6,7 +6,7 @@
 </ion-navbar>
 
 <ion-content>
-  <ion-searchbar placeholder="Buscar creepypastas" hideCancelButton [(ngModel)]="searchQuery" (input)="filterCreepypastas()"></ion-searchbar>
+  <ion-searchbar placeholder="Buscar creepypastas" hideCancelButton [(ngModel)]="searchQuery" (input)="filterCreepypastas(true,false,false)"></ion-searchbar>
 
   <ion-card *ngIf="searchObject">
     <ion-card-content>
@@ -26,3 +26,7 @@
     </ion-item>
   </ion-list>
 </ion-content>
+<button fab danger fab-bottom fab-right style="z-index: 999" (click)="doRefresh()">
+  <ion-icon *ngIf="!isLoading" name='refresh' is-active="false"></ion-icon>
+  <ion-spinner *ngIf="isLoading"></ion-spinner>
+</button>

@@ -1,4 +1,4 @@
-import {Page, NavController, NavParams} from 'ionic-angular';
+import {Page, Alert, NavController, NavParams} from 'ionic-angular';
 import {CreepypastasService} from '../../providers/creepypastas-service/creepypastas-service';
 
 import {SinglePostPage} from '../singlepost/singlepost';
@@ -18,8 +18,25 @@ export class CreepypastasPage {
     this.searchQuery = localStorage.getItem('searchQuery') || '';
 
     this.filteredCreepypastas = [];
-    this.filterCreepypastas();
+    this.filterCreepypastas(true,false,true);
   }
+
+  doAlert(count) {
+    if(!count){
+      return;
+    }
+  var alert = Alert.create({
+    title: '¡Listo!',
+    message: 'Descargaste ' + count + ' nuevos creepypastas',
+    buttons: ['Ok']
+  });
+  this.nav.present(alert);
+}
+
+doRefresh(){
+  console.log("refresh");
+  this.filterCreepypastas(false,true,false);
+}
 
   stringToDate(dateString) {
     return new Date(dateString);
@@ -33,29 +50,42 @@ export class CreepypastasPage {
     }
   }
 
-  filterCreepypastas(){
-    var creepypastasPageSelf = this;
+
+  filterCreepypastas(fLocal,showAlerts,secondRound){
+    var cPSelf = this;
+    cPSelf.isLoading = true;
     var searchCriteria = {
-      query: this.searchQuery
+      query: cPSelf.searchQuery || '',
+      forceLocal: fLocal
+    };
+
+    if(cPSelf.searchObject){
+      searchCriteria.categoryID = cPSelf.searchObject.ID;
+      searchCriteria.categorySlug = cPSelf.searchObject.slug;
     }
 
-    if(this.searchObject){
-      searchCriteria.categoryID = this.searchObject.ID;
-      searchCriteria.categorySlug = this.searchObject.slug;
-    }
+    var creepypastasPromise = cPSelf.creepypastasService.loadCreepypastas(searchCriteria);
+    creepypastasPromise.then(function(fCKV) {
+      cPSelf.filteredCreepypastas = fCKV;
+      console.log(fCKV);
+      console.log(cPSelf);
 
-    var creepypastasPromise = this.creepypastasService.loadCreepypastas(searchCriteria);
-    creepypastasPromise.then(function(filteredCreepypastasKV) {
-      creepypastasPageSelf.filteredCreepypastas = filteredCreepypastasKV;
-    });
+      if(secondRound === true){
+        console.debug("firstRound Listo. --> secondRound")
+        cPSelf.filterCreepypastas(false,true,false);
+      }
+      if(fLocal === false){
+        console.debug("forceLocal false listo. :)")
+      }
 
-    searchCriteria.forceLocal = true;
+      if(showAlerts === true){
+        setTimeout(function() {
+          console.log("creepypastas updated");
+          cPSelf.isLoading = false;
+        }, 500)
+      }
 
-    var creepypastasLocalPromise = this.creepypastasService.loadCreepypastas(searchCriteria);
-    creepypastasLocalPromise.then(function(filteredCreepypastasKV) {
-      creepypastasPageSelf.filteredCreepypastas = filteredCreepypastasKV;
-    });
-
+    })
 
   }
 

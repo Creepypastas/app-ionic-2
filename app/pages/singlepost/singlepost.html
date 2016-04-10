@@ -20,3 +20,7 @@
 
 
 </ion-content>
+<button fab danger fab-bottom fab-right style="z-index: 999" (click)="goRandom()">
+  <ion-icon *ngIf="!isLoading" name="shuffle" is-active="false"></ion-icon>
+  <ion-spinner *ngIf="isLoading"></ion-spinner>
+</button>

@@ -1,5 +1,6 @@
 import {Injectable, Inject} from 'angular2/core';
 import {Http} from 'angular2/http';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class CreepypastasService {
@@ -19,20 +20,6 @@ export class CreepypastasService {
     console.debug("app::startupLoad");
     this.loadFromLocalStorage();
     this.loadFromPreloadedData();
-    if (null === this.creepypastasCategoriasMap || null === this.creepypastasMap){
-      console.debug("Categorías o creepypastas null. startupLoad()");
-      var servSelf = this;
-      var catsProm = this.loadCats();
-      catsProm.then(function(catsKV) {
-        for (var i = 0; i < catsKV.length; i++) {
-          servSelf.loadCreepypastas({
-            categoryID:catsKV[i][1].ID,
-            categorySlug:catsKV[i][1].slug,
-            thisIsPreload:true
-          });
-        }
-      });
-    }
   }
 
   loadFromLocalStorage() {
@@ -46,10 +33,12 @@ export class CreepypastasService {
     console.debug("app::loadFromPreloadedData");
     if (null === this.creepypastasCategoriasMap){
       this.creepypastasCategoriasMap = require("./categories") || null;
+      this.lastUpdated.categories = -1;
       //console.table(this.creepypastasCategoriasMap);
     }
     if (null === this.creepypastasMap){
       this.creepypastasMap = require("./creepypastas") || null;
+      this.lastUpdated.creepypastas = -1;
       //console.debug(this.creepypastasCategoriasMap);
     }
   }
@@ -68,55 +57,106 @@ export class CreepypastasService {
     var deltaTime = (new Date()).getTime() - (this.lastUpdated.categories || 0);
     deltaTime = (Math.abs(deltaTime)/36e5);
 
+    if (this.lastUpdated.categories === -1){
+      console.log("app::resolve categories from preloaded data::-1");
+      this.lastUpdated.categories = 0;
+      this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
+      return Promise.resolve(this.creepypastasCategoriasKV);
+    }
+
     if (this.creepypastasCategoriasMap && deltaTime < 24) {
       this.creepypastasCategoriasKV = this.objTo2dArray(this.creepypastasCategoriasMap);
       console.log("app::categories from localStorage::deltaTime");
       return Promise.resolve(this.creepypastasCategoriasKV);
     }
 
+    console.log("app::categories will try json api");
+
     return new Promise(resolve => {
       this.http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/categories?fields=ID,slug,name,post_count,description')
         .map(res => res.json())
         .subscribe(
-        response => {
-          this.creepypastasCategoriasMap = this.creepypastasCategoriasMap || {};
-          response.categories.filter((item) => {
-            switch (item.ID) {
-              case 464:
-              case 396:
-              case 185:
-                return false;
-              default:
-                this.creepypastasCategoriasMap[item.ID] = item;
-                return true;
+          response => {
+            console.log("app::categories::http::response");
+            console.log("app::categories updated from json api");
+            this.creepypastasCategoriasMap = this.creepypastasCategoriasMap || {};
+            console.log(response.categories);
+            response.categories.filter((item) => {
+              switch (item.ID) {
+                case 464:
+                case 396:
+                case 185:
+                  return false;
+                default:
+                  this.creepypastasCategoriasMap[item.ID] = item;
+                  return true;
+              }
+            });
+            this.lastUpdated.categories = ( (new Date()).getTime() );
+            localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
+          },
+          error => {
+            console.error("app:categories::http::error");
+            if(null === this.creepypastasCategoriasMap){
+              this.creepypastasCategoriasMap = require('./categories');
+              console.log("app::categories fallback from preloaded");
+            } else{
+              console.log("app::categories fallback from localStorage");
             }
-          });
-          console.log("app::categories from json api");
-          this.lastUpdated.categories = ( (new Date()).getTime() );
-          localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
-        },
-        error => {
-          if(null === this.creepypastasCategoriasMap){
-            this.creepypastasCategoriasMap = require('./categories');
-            console.log("app::categories fallback from preloaded");
-          } else{
-            console.log("app::categories fallback from localStorage");
+            resolve(this.storeAndComplete('creepypastasCategorias',this.creepypastasCategoriasMap));
+          },
+          () => {
+            console.log("app:categories::http::complete");
+            resolve(this.storeAndComplete('creepypastasCategorias',this.creepypastasCategoriasMap));
           }
-          resolve(this.storeAndComplete('creepypastasCategorias',this.creepypastasCategoriasMap));
-        },
-        () => {
-          console.log("app::categories complete");
-          resolve(this.storeAndComplete('creepypastasCategorias',this.creepypastasCategoriasMap));
-        }
       );
     });
   }
 
   storeAndComplete(name,map){
-    console.log('app::resolve::' + name + 'KV');
+    console.log('app::store::' + name + 'KV');
     localStorage.setItem(name, JSON.stringify(map));
     this[name+'KV'] = this.objTo2dArray(map);
     return this[name+'KV'];
+  }
+
+  loadSinglePost(postID){
+    var apiURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/';
+    apiURL+=postID;
+    apiURL+='?fields=ID,title,date,categories,status,content';
+    console.debug(apiURL);
+
+    if(!postID){
+      console.error("service::loadSinglePost::postID is undefined");
+      return Promise.resolve({success:false,error:true,data:null});
+    }
+
+    return new Promise(resolve => {
+      this.http.get(apiURL)
+        .map(res => res.json())
+        .subscribe(
+          response => {
+            console.log("app::singlepost::http::response");
+            console.debug(response);
+            this.creepypastasMap = this.creepypastasMap || {};
+            this.creepypastasMap[response.ID] = response;
+            this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
+            var responseObj = {
+              success: true,
+              data:response
+            };
+            resolve(responseObj);
+          },
+          error => {
+            console.error("app:singlepost::http::error", error);
+            resolve({success:false,error:true,data:null});
+          },
+          () => {
+            console.log("app:categories::http::complete");
+          }
+      );
+    });
+
   }
 
 
@@ -134,12 +174,22 @@ export class CreepypastasService {
     var deltaTime = (new Date()).getTime() - (lastUpdated || 0);
     deltaTime = (Math.abs(deltaTime)/36e5);
 
-    if (searchCriteria.forceLocal || (this.creepypastasMap && deltaTime < 12)) {
+    if (lastUpdated === -1 || !lastUpdated) {
+      console.log("app::creepypastas from preloaded::-1");
       this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
-      console.log("app::creepypastas from localStorage");
+      this.lastUpdated[searchCriteria.categorySlug || 'creepypastas'] = 1;
       return Promise.resolve(this.filterCreepypastas(searchCriteria));
     }
 
+    if (searchCriteria.forceLocal || (this.creepypastasMap && deltaTime < 12)) {
+      this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
+      if(searchCriteria.forceLocal)
+        console.log("app::creepypastas from localStorage::forceLocal");
+      else {
+        console.log("app::creepypastas from localStorage::deltaTime");
+      }
+      return Promise.resolve(this.filterCreepypastas(searchCriteria));
+    }
     var requestURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100&fields=ID,title,date,categories,status';
     if(!searchCriteria.thisIsPreload){
       requestURL+= ',content';
@@ -147,12 +197,13 @@ export class CreepypastasService {
     if(searchCriteria.categorySlug){
       requestURL+= '&category=' + searchCriteria.categorySlug;
     }
-
+    console.debug("filtering.152 " + requestURL);
     return new Promise(resolve => {
       this.http.get(requestURL)
         .map(res => res.json())
         .subscribe(
         response => {
+          console.debug("filtering.158");
           response.posts.filter((item) => {
             this.creepypastasMap = this.creepypastasMap || {};
             if (typeof item.status !== 'undefined' && item.status === 'publish') {
@@ -169,6 +220,7 @@ export class CreepypastasService {
           console.log("app::creepypastas from json api");
         },
         error => {
+          console.log("filtering.175");
           this.creepypastasMap = this.creepypastasMap || {};
           console.error(error);
           this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
@@ -177,6 +229,7 @@ export class CreepypastasService {
           resolve(this.filterCreepypastas(searchCriteria));
         },
         () => {
+          console.log("filtering.184");
           console.log("app::creepypastas complete");
           this.storeAndComplete('creepypastas',this.creepypastasMap);
           resolve(this.filterCreepypastas(searchCriteria));
@@ -238,5 +291,8 @@ export class CreepypastasService {
     return categoriesMap;
   }
 
+  getRandomCreepypasta(){
+    return this.creepypastasKV[Math.floor(Math.random() * this.creepypastasKV.length)];
+  }
 
 }

@@ -9,7 +9,7 @@ import {CategoriasPage} from './pages/categorias/categorias';
 
 @App({
   templateUrl: 'build/app.html',
-  config: {},
+  config: {mode: 'md'},
   providers: [CreepypastasService]
 })
 class MyApp {
