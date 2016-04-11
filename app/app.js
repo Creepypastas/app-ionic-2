@@ -9,12 +9,6 @@ import {CategoriasPage} from './pages/categorias/categorias';
 import {enableProdMode} from 'angular2/core';
 enableProdMode();
 
-function handleOpenURL(url) {
-  setTimeout(function() {
-    alert("request url: " + url);
-  }, 0);
-}
-
 @App({
   templateUrl: 'build/app.html',
   config: {mode: 'md'},
