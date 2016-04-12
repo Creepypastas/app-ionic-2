@@ -19,7 +19,7 @@ export class GettingStartedPage {
     this.slides = [
       {
         title: "Creepypastas",
-        image: "https://app.creepypastas.com/favicon/s.128.png",
+        image: "img/favicon/s.128.png",
       }
     ];
   }
