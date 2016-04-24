@@ -6,6 +6,7 @@ import {CreepypastasService} from './providers/creepypastas-service/creepypastas
 import {GettingStartedPage} from './pages/getting-started/getting-started';
 import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 import {CategoriasPage} from './pages/categorias/categorias';
+import {ConfigPage} from './pages/config/config';
 import {enableProdMode} from 'angular2/core';
 enableProdMode();
 
@@ -27,7 +28,8 @@ class MyApp {
 
     this.pages = [
       { title: 'Categorias', component: CategoriasPage },
-      { title: 'Creepypastas', component: CreepypastasPage }
+      { title: 'Creepypastas', component: CreepypastasPage },
+      { title: 'Opciones', component: ConfigPage }
     ];
 
     this.rootPage = GettingStartedPage;
