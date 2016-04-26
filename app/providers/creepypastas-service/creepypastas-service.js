@@ -13,34 +13,32 @@ export class CreepypastasService {
     this.creepypastasMap = null;
     this.creepypastasCategoriasMap = null;
     this.lastUpdated = null;
+    this.lf = localforage.createInstance({
+      name: 'creepypastas.creepypastas.com'
+    });
+
     this.startupLoad();
   }
 
   startupLoad() {
     console.debug("app::startupLoad");
     this.loadFromLocalStorage();
-    this.loadFromPreloadedData();
   }
 
   loadFromLocalStorage() {
-    console.debug("app::loadFromLocalStorage");
-    this.creepypastasMap = JSON.parse( localStorage.getItem('creepypastas') ) || null;
-    this.creepypastasCategoriasMap = JSON.parse( localStorage.getItem('creepypastasCategorias') ) || null;
-    this.lastUpdated = JSON.parse(localStorage.getItem('lastUpdated')) || {categories:0,creepypastas:0};
-  }
+    var self = this;
+    console.debug("app::asyncLoadFromLocalForage");
+    var creepypastasP = this.lf.getItem('creepypastas');
+    var categoriesP = this.lf.getItem('creepypastasCategorias');
+    var lastUP = this.lf.getItem('lastUpdated');
 
-  loadFromPreloadedData(){
-    console.debug("app::loadFromPreloadedData");
-    if (null === this.creepypastasCategoriasMap){
-      this.creepypastasCategoriasMap = require("./categories") || null;
-      this.lastUpdated.categories = -1;
-      //console.table(this.creepypastasCategoriasMap);
-    }
-    if (null === this.creepypastasMap){
-      this.creepypastasMap = require("./creepypastas") || null;
-      this.lastUpdated.creepypastas = -1;
-      //console.debug(this.creepypastasCategoriasMap);
-    }
+    return Promise.all([creepypastasP, categoriesP, lastUP]).then(function(values) {
+      console.debug("app::asyncLoadFromLocalForage::resolve:all")
+      self.creepypastasMap = values[0] || require("./creepypastas") || null;
+      self.creepypastasCategoriasMap = values[1] || require("./categories") || null;
+      self.lastUpdated = values[2] || {categories:-1, creepypastas:-1};
+      return Promise.resolve(values);
+    });
   }
 
   objTo2dArray(obj){
@@ -93,7 +91,7 @@ export class CreepypastasService {
               }
             });
             this.lastUpdated.categories = ( (new Date()).getTime() );
-            localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
+            this.lf.setItem('lastUpdated', this.lastUpdated);
           },
           error => {
             console.error("app:categories::http::error");
@@ -114,8 +112,8 @@ export class CreepypastasService {
   }
 
   storeAndComplete(name,map){
-    console.log('app::store::' + name + 'KV');
-    localStorage.setItem(name, JSON.stringify(map));
+    console.debug('app::store::' + name + 'KV');
+    this.lf.setItem(name, map);
     this[name+'KV'] = this.objTo2dArray(map);
     return this[name+'KV'];
   }
@@ -145,6 +143,7 @@ export class CreepypastasService {
               success: true,
               data:response
             };
+            this.storeAndComplete('creepypastas',this.creepypastasMap);
             resolve(responseObj);
           },
           error => {
@@ -177,6 +176,7 @@ export class CreepypastasService {
     if (lastUpdated === -1 || !lastUpdated) {
       console.log("app::creepypastas from preloaded::-1");
       this.creepypastasKV = this.objTo2dArray(this.creepypastasMap);
+      console.log("app::KV::", this.creepypastasKV);
       this.lastUpdated[searchCriteria.categorySlug || 'creepypastas'] = 1;
       return Promise.resolve(this.filterCreepypastas(searchCriteria));
     }
@@ -215,7 +215,7 @@ export class CreepypastasService {
           });
           if(!searchCriteria.thisIsPreload) {
             this.lastUpdated[searchCriteria.categorySlug || 'creepypastas'] = ( (new Date()).getTime() );
-            localStorage.setItem('lastUpdated', JSON.stringify(this.lastUpdated));
+            this.lf.setItem('lastUpdated', this.lastUpdated);
           }
           console.log("app::creepypastas from json api");
         },
@@ -242,7 +242,7 @@ export class CreepypastasService {
     console.log(searchCriteria);
 
     var q = (searchCriteria.query || '');
-    localStorage.setItem('searchQuery', q);
+    this.lf.setItem('searchQuery', q);
     q = q.replace(/[_\W]/g, '').toLowerCase();
 
     var filteredCreepypastas = this.creepypastasKV.filter((item) => {
@@ -258,6 +258,7 @@ export class CreepypastasService {
       return true;
     });
 
+    console.debug("filteredCreepypastas", filteredCreepypastas);
     return filteredCreepypastas;
   }
 

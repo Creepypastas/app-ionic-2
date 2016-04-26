@@ -1,0 +1,23 @@
+{
+  "name": "Creepypastas",
+  "description": "Las actualizaciones de @Creepypastas en tu smartphone.",
+  "main": "",
+  "authors": [
+    "Mauricio Navarro Miranda <mauricio@navarromiranda.mx>"
+  ],
+  "license": "",
+  "homepage": "https://creepypastas.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "localforage": "^1.4.0"
+  },
+  "install": {
+    "path": "www/js/lib"
+  }
+}
