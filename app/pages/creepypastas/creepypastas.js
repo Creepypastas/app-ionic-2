@@ -12,13 +12,20 @@ export class CreepypastasPage {
   }
 
   constructor(nav, navParams, creepypastasService) {
+    var cpSelf = this;
     this.nav = nav;
     this.creepypastasService = creepypastasService;
     this.searchObject = navParams.get('searchObject');
-    this.searchQuery = localStorage.getItem('searchQuery') || '';
-
     this.filteredCreepypastas = [];
-    this.filterCreepypastas(true,false,true);
+
+    this.creepypastasService.lf.getItem('searchQuery').then(function(q){
+      console.debug("app::creepypastas::q::", q);
+      cpSelf.searchQuery =  q || '';
+      console.debug("app::creepypastas::earchQuery::", cpSelf.searchQuery);
+
+      cpSelf.filterCreepypastas(true,false,true);
+    });
+
   }
 
   doAlert(count) {
@@ -52,6 +59,7 @@ doRefresh(){
 
 
   filterCreepypastas(fLocal,showAlerts,secondRound){
+    console.debug("app::creepypastas::filterCreepypastas");
     var cPSelf = this;
     cPSelf.isLoading = true;
     var searchCriteria = {
@@ -66,9 +74,9 @@ doRefresh(){
 
     var creepypastasPromise = cPSelf.creepypastasService.loadCreepypastas(searchCriteria);
     creepypastasPromise.then(function(fCKV) {
+      console.debug("app::fCKV::", fCKV);
+
       cPSelf.filteredCreepypastas = fCKV;
-      console.log(fCKV);
-      console.log(cPSelf);
 
       if(secondRound === true){
         console.debug("firstRound Listo. --> secondRound")
