@@ -2,11 +2,12 @@
 # http://git-scm.com/docs/gitignore
 
 node_modules/
+app/
+hooks/
 bower_components/
-www/build/
-www/js/lib/
 platforms/
 plugins/
 *.swp
 .DS_Store
 Thumbs.db
+
