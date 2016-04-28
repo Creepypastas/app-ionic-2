@@ -1,6 +1,5 @@
 import 'es5-shim';
 import 'es6-shim';
-import io from 'socket.io-client'
 import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {CreepypastasService} from './providers/creepypastas-service/creepypastas-service';
@@ -8,15 +7,6 @@ import {GettingStartedPage} from './pages/getting-started/getting-started';
 import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 import {CategoriasPage} from './pages/categorias/categorias';
 import {ConfigPage} from './pages/config/config';
-import {enableProdMode} from 'angular2/core';
-enableProdMode();
-
-  var socket = io('http://rc.ws.creepypastas.com:7777');
-  socket.on('connect', function(){});
-  socket.on('event', function(data){});
-  socket.on('disconnect', function(){});
-
-  socket.emit('msg', 'msg');
 
 @App({
   templateUrl: 'build/app.html',
@@ -40,7 +30,7 @@ class MyApp {
       { title: 'Opciones', component: ConfigPage }
     ];
 
-    this.rootPage = GettingStartedPage;
+    this.rootPage = CreepypastasPage;
   }
 
   initializeApp() {

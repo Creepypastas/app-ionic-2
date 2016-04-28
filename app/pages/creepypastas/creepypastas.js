@@ -28,6 +28,10 @@ export class CreepypastasPage {
 
   }
 
+  showOnlineCount() {
+    this.creepypastasService.showUsersOnlineTOAST(this.nav);
+  }
+
   doAlert(count) {
     if(!count){
       return;

@@ -1,6 +1,8 @@
+import {Toast} from 'ionic-angular';
 import {Injectable, Inject} from 'angular2/core';
 import {Http} from 'angular2/http';
 import 'rxjs/add/operator/map';
+import io from 'socket.io-client';
 
 @Injectable()
 export class CreepypastasService {
@@ -10,6 +12,8 @@ export class CreepypastasService {
 
   constructor(http) {
     this.http = http;
+    this.socket = io('http://rc.ws.creepypastas.com:7777');
+    this.userCount = 0;
     this.creepypastasMap = null;
     this.creepypastasCategoriasMap = null;
     this.lastUpdated = null;
@@ -18,7 +22,37 @@ export class CreepypastasService {
     });
 
     this.startupLoad();
+    this.buildSocket();
   }
+
+  showUsersOnlineTOAST(nav) {
+    let message = this.userCount + ' conectados';
+
+    let toast = Toast.create({
+      message: message,
+      duration: 3000
+    });
+
+    toast.onDismiss(() => {
+      console.log('Dismissed toast');
+    });
+
+    nav.present(toast);
+  }
+
+  buildSocket() {
+    console.log("app::cpsocket::buildSocket");
+    this.socket.on('connect', function(){});
+    this.socket.on('disconnect', function(){});
+
+    let srvSelf = this;
+    this.socket.on('user::count', function(userCount){
+      srvSelf.userCount = userCount;
+    });
+
+    this.socket.emit('msg', 'msg');
+  }
+
 
   startupLoad() {
     console.debug("app::startupLoad");
