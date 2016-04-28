@@ -80,11 +80,24 @@ export class CreepypastasService {
       }
 
       srvSelf.socketInfo.lastToast = (new Date()).getTime();
-      var msg = userCount + ' espectros merodeando. ';
+      var msg = userCount + ' espectros ' +  srvSelf.randomVerb();
       srvSelf.showUsersOnlineTOAST(msg);
     });
 
     this.socket.emit('msg', 'msg');
+  }
+
+  randomVerb() {
+    var verbsList = [
+      'deambulando',
+      'husmeando',
+      'al acecho',
+      'aterrorizando',
+      'en pena',
+      'despiertos'
+    ];
+
+    return verbsList[Math.floor(Math.random() * verbsList.length)];
   }
 
 

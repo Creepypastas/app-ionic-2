@@ -27,7 +27,6 @@ class MyApp {
     this.pages = [
       { title: 'Categorias', component: CategoriasPage },
       { title: 'Creepypastas', component: CreepypastasPage },
-      { title: 'Opciones', component: ConfigPage }
     ];
 
     this.rootPage = CreepypastasPage;
