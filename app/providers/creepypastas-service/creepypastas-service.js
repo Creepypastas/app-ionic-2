@@ -12,7 +12,7 @@ export class CreepypastasService {
 
   constructor(http) {
     this.http = http;
-    this.socket = io('http://rc.ws.creepypastas.com:7777');
+    this.socket = io('https://wss.creepypastas.com:8000');
     this.userCount = 0;
     this.creepypastasMap = null;
     this.creepypastasCategoriasMap = null;
