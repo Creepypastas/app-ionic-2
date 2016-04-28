@@ -15,6 +15,11 @@ export class CreepypastasService {
     this.nav = null;
     this.socket = io('https://wss.creepypastas.com:8000');
     this.userCount = 0;
+
+    this.socketInfo = {
+      lastToast:0
+    };
+
     this.creepypastasMap = null;
     this.creepypastasCategoriasMap = null;
     this.lastUpdated = null;
@@ -32,6 +37,7 @@ export class CreepypastasService {
 
   showUsersOnlineTOAST(msg) {
 
+    var srvSelf = this;
    var message = '';
 
     if (!msg) {
@@ -42,11 +48,14 @@ export class CreepypastasService {
 
     let toast = Toast.create({
       message: message,
-      duration: 150
+      duration: 666,
+      showCloseButton: true,
+      dismissOnPageChange: true,
+      closeButtonText: 'OK'
     });
 
     toast.onDismiss(() => {
-      console.log('Dismissed toast');
+      console.log('app::socket::dimissedToast');
     });
 
     this.nav.present(toast);
@@ -60,10 +69,19 @@ export class CreepypastasService {
     let srvSelf = this;
     this.socket.on('user::count', function(userCount){
       srvSelf.userCount = userCount;
-      if (null !== srvSelf.nav) {
-	var msg = userCount + ' espectros merodeando.';
-        srvSelf.showUsersOnlineTOAST(msg);
+
+      if (null === srvSelf) {
+        return;
       }
+
+      var deltaTime = (new Date()).getTime() - (srvSelf.socketInfo.lastToast);
+      if (deltaTime < 3333) {
+        return;
+      }
+
+      srvSelf.socketInfo.lastToast = (new Date()).getTime();
+      var msg = userCount + ' espectros merodeando. ';
+      srvSelf.showUsersOnlineTOAST(msg);
     });
 
     this.socket.emit('msg', 'msg');
