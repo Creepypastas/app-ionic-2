@@ -45,7 +45,7 @@ var MyApp = (_dec = (0, _ionicAngular.App)({
     this.creepypastasService = creepypastasService;
     this.initializeApp();
 
-    this.pages = [{ title: 'Categorias', component: _categorias.CategoriasPage }, { title: 'Creepypastas', component: _creepypastas.CreepypastasPage }, { title: 'Opciones', component: _config.ConfigPage }];
+    this.pages = [{ title: 'Categorias', component: _categorias.CategoriasPage }, { title: 'Creepypastas', component: _creepypastas.CreepypastasPage }];
 
     this.rootPage = _creepypastas.CreepypastasPage;
   }
@@ -252,6 +252,7 @@ var CreepypastasPage = (_dec = (0, _ionicAngular.Page)({
     var cpSelf = this;
     this.nav = nav;
     this.creepypastasService = creepypastasService;
+    this.creepypastasService.setNav(nav);
     this.searchObject = navParams.get('searchObject');
     this.filteredCreepypastas = [];
 
@@ -267,7 +268,7 @@ var CreepypastasPage = (_dec = (0, _ionicAngular.Page)({
   _createClass(CreepypastasPage, [{
     key: 'showOnlineCount',
     value: function showOnlineCount() {
-      this.creepypastasService.showUsersOnlineTOAST(this.nav);
+      this.creepypastasService.showUsersOnlineTOAST();
     }
   }, {
     key: 'doAlert',
@@ -518,8 +519,14 @@ var CreepypastasService = exports.CreepypastasService = (_dec = (0, _core.Inject
     _classCallCheck(this, CreepypastasService);
 
     this.http = http;
+    this.nav = null;
     this.socket = (0, _socket2.default)('https://wss.creepypastas.com:8000');
     this.userCount = 0;
+
+    this.socketInfo = {
+      lastToast: 0
+    };
+
     this.creepypastasMap = null;
     this.creepypastasCategoriasMap = null;
     this.lastUpdated = null;
@@ -532,20 +539,36 @@ var CreepypastasService = exports.CreepypastasService = (_dec = (0, _core.Inject
   }
 
   _createClass(CreepypastasService, [{
+    key: 'setNav',
+    value: function setNav(nav) {
+      this.nav = nav;
+    }
+  }, {
     key: 'showUsersOnlineTOAST',
-    value: function showUsersOnlineTOAST(nav) {
-      var message = this.userCount + ' conectados';
+    value: function showUsersOnlineTOAST(msg) {
+
+      var srvSelf = this;
+      var message = '';
+
+      if (!msg) {
+        message = this.userCount + ' espectros conectados.';
+      } else {
+        message = msg;
+      }
 
       var toast = _ionicAngular.Toast.create({
         message: message,
-        duration: 3000
+        duration: 666,
+        showCloseButton: true,
+        dismissOnPageChange: true,
+        closeButtonText: 'OK'
       });
 
       toast.onDismiss(function () {
-        console.log('Dismissed toast');
+        console.log('app::socket::dimissedToast');
       });
 
-      nav.present(toast);
+      this.nav.present(toast);
     }
   }, {
     key: 'buildSocket',
@@ -557,9 +580,29 @@ var CreepypastasService = exports.CreepypastasService = (_dec = (0, _core.Inject
       var srvSelf = this;
       this.socket.on('user::count', function (userCount) {
         srvSelf.userCount = userCount;
+
+        if (null === srvSelf) {
+          return;
+        }
+
+        var deltaTime = new Date().getTime() - srvSelf.socketInfo.lastToast;
+        if (deltaTime < 3333) {
+          return;
+        }
+
+        srvSelf.socketInfo.lastToast = new Date().getTime();
+        var msg = userCount + ' espectros ' + srvSelf.randomVerb();
+        srvSelf.showUsersOnlineTOAST(msg);
       });
 
       this.socket.emit('msg', 'msg');
+    }
+  }, {
+    key: 'randomVerb',
+    value: function randomVerb() {
+      var verbsList = ['deambulando', 'husmeando', 'al acecho', 'aterrorizando', 'en pena', 'despiertos'];
+
+      return verbsList[Math.floor(Math.random() * verbsList.length)];
     }
   }, {
     key: 'startupLoad',
