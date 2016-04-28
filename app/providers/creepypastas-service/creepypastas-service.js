@@ -12,6 +12,7 @@ export class CreepypastasService {
 
   constructor(http) {
     this.http = http;
+    this.nav = null;
     this.socket = io('https://wss.creepypastas.com:8000');
     this.userCount = 0;
     this.creepypastasMap = null;
@@ -25,19 +26,30 @@ export class CreepypastasService {
     this.buildSocket();
   }
 
-  showUsersOnlineTOAST(nav) {
-    let message = this.userCount + ' conectados';
+  setNav(nav) {
+    this.nav = nav;
+  }
+
+  showUsersOnlineTOAST(msg) {
+
+   var message = '';
+
+    if (!msg) {
+      message = this.userCount + ' espectros conectados.';
+    }else {
+      message = msg;
+    }
 
     let toast = Toast.create({
       message: message,
-      duration: 3000
+      duration: 150
     });
 
     toast.onDismiss(() => {
       console.log('Dismissed toast');
     });
 
-    nav.present(toast);
+    this.nav.present(toast);
   }
 
   buildSocket() {
@@ -48,6 +60,10 @@ export class CreepypastasService {
     let srvSelf = this;
     this.socket.on('user::count', function(userCount){
       srvSelf.userCount = userCount;
+      if (null !== srvSelf.nav) {
+	var msg = userCount + ' espectros merodeando.';
+        srvSelf.showUsersOnlineTOAST(msg);
+      }
     });
 
     this.socket.emit('msg', 'msg');
