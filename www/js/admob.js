@@ -23,15 +23,6 @@ if(( /(ipad|iphone|ipod|android|windows phone)/i.test(navigator.userAgent) )) {
 function initApp() {
     if (! AdMob ) { console.error( 'admob plugin not ready' ); return; }
 
-    AdMob.createBanner( {
-        adId: admobid.banner,
-        isTesting: false,
-        overlap: false,
-        offsetTopBar: false,
-        position: AdMob.AD_POSITION.BOTTOM_CENTER,
-        bgColor: 'black'
-    } );
-
     AdMob.prepareInterstitial({
         adId: admobid.interstitial,
         autoShow: true
