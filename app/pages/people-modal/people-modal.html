@@ -11,7 +11,90 @@
 </ion-toolbar>
 
 <ion-content>
-  {{userCount}}
-  <ion-list>
-  </ion-list>
+
+  <div>
+    <ion-segment [(ngModel)]="configSegment">
+      <ion-segment-button value="user">
+        Cuenta
+      </ion-segment-button>
+      <ion-segment-button value="team">
+        Clanes
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div [ngSwitch]="configSegment">
+    <ion-list *ngSwitchWhen="'user'">
+      <ion-item>
+        <ion-card>
+          <ion-card-header>
+            <span secondary>Configura tu cuenta</span>
+          </ion-card-header>
+          <ion-card-content>
+            Las cuentas de usuario están desactivadas.
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Usuario</ion-label>
+        <ion-input disabled="true" type="text" [(ngModel)]="user.username"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Contraseña</ion-label>
+        <ion-input disabled="true" type="password" [(ngModel)]="user.password"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Recordar</ion-label>
+        <ion-checkbox checked="true" disabled="true"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+
+    <div *ngSwitchWhen="'team'">
+      <ion-card>
+        <ion-card-content>
+          <ion-card-title>
+            <span secondary>Clan novatos</span>
+          </ion-card-title>
+          <div>
+            Eres parte del clan novatos.
+          </div>
+        </ion-card-content>
+        <ion-item>
+          <button primary clear item-left>
+            <ion-icon name="people"></ion-icon>
+            <div>827 en el clan</div>
+          </button>
+          <ion-note  item-right>
+            <span danger>
+              Abandonar <ion-icon name="exit"></ion-icon>
+            </span>
+          </ion-note>
+        </ion-item>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-content>
+          <ion-card-title>
+            <span secondary>Clan zombi</span>
+          </ion-card-title>
+          <div>
+            Eres parte del clan zombi.
+          </div>
+        </ion-card-content>
+        <ion-item>
+          <button primary clear item-left>
+            <ion-icon name="people"></ion-icon>
+            <div>12 en el clan</div>
+          </button>
+          <ion-note  item-right>
+            <span danger>
+              Abandonar <ion-icon name="exit"></ion-icon>
+            </span>
+          </ion-note>
+        </ion-item>
+      </ion-card>
+
+
+    </div>
+  </div>
 </ion-content>

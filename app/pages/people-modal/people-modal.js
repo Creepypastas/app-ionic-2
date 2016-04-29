@@ -12,6 +12,12 @@ export class PeopleModalPage {
     this.platform = platform;
     this.navParams = navParams;
     this.viewCtrl = viewCtrl;
+    this.configSegment = 'user';
+
+    this.user = {
+      username: 'invitado',
+      password: 'password'
+    };
 
     console.debug("app::PeopleModalPage::navParams::", this.navParams);
     this.userCount = this.navParams.get('userCount');

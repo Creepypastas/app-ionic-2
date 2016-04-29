@@ -38,6 +38,7 @@ export class CreepypastasService {
   }
 
   getPeopleInfo() {
+    console.log("app::creepypastasService::getPeopleInfo", {userCount:this.userCount});
     return {userCount:this.userCount};
   }
 
@@ -87,7 +88,7 @@ export class CreepypastasService {
 
       srvSelf.socketInfo.lastToast = (new Date()).getTime();
       var msg = userCount + ' espectros ' +  srvSelf.randomVerb();
-      srvSelf.showUsersOnlineTOAST(msg);
+      srvSelf.showUsersOnlineTOAST();
     });
 
     this.socket.emit('msg', 'msg');
