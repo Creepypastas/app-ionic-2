@@ -37,6 +37,10 @@ export class CreepypastasService {
     this.nav = nav;
   }
 
+  getPeopleInfo() {
+    return {userCount:this.userCount};
+  }
+
   showUsersOnlineTOAST(msg) {
 
     var srvSelf = this;

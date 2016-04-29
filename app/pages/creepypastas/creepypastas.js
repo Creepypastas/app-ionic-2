@@ -1,7 +1,8 @@
-import {Page, Alert, NavController, NavParams} from 'ionic-angular';
+import {Page, Modal, Alert, NavController, NavParams} from 'ionic-angular';
 import {CreepypastasService} from '../../providers/creepypastas-service/creepypastas-service';
 
 import {SinglePostPage} from '../singlepost/singlepost';
+import {PeopleModalPage} from '../people-modal/people-modal';
 
 @Page({
   templateUrl: 'build/pages/creepypastas/creepypastas.html'
@@ -26,6 +27,15 @@ export class CreepypastasPage {
       cpSelf.filterCreepypastas(true,false,true);
     });
 
+  }
+
+  showPeopleModal() {
+    console.debug("app::creepypastas::showPeopleModal(click)");
+    let modal = Modal.create(
+      PeopleModalPage,
+      this.creepypastasService.getPeopleInfo()
+    );
+    this.nav.present(modal)
   }
 
   showOnlineCount() {
