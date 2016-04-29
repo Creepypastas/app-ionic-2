@@ -36,6 +36,10 @@ class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+      var nav = this.app.getComponent('nav');
+      if (nav) {
+        this.creepypastasService.setNav(nav);
+      }
       StatusBar.styleDefault();
     });
   }

@@ -15,7 +15,6 @@ export class CreepypastasPage {
     var cpSelf = this;
     this.nav = nav;
     this.creepypastasService = creepypastasService;
-    this.creepypastasService.setNav(nav);
     this.searchObject = navParams.get('searchObject');
     this.filteredCreepypastas = [];
 

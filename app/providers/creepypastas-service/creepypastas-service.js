@@ -11,6 +11,7 @@ export class CreepypastasService {
   }
 
   constructor(http) {
+    console.debug("app::creepypastasService::constructor");
     this.http = http;
     this.nav = null;
     this.socket = io('https://wss.creepypastas.com:8000');
@@ -32,6 +33,7 @@ export class CreepypastasService {
   }
 
   setNav(nav) {
+    console.debug("app::creepypastasService::setNav::", nav);
     this.nav = nav;
   }
 
