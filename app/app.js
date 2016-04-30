@@ -3,6 +3,7 @@ import 'es6-shim';
 import {App, IonicApp, Platform} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 import {CreepypastasService} from './providers/creepypastas-service/creepypastas-service';
+import {UserService} from './providers/user-service/user-service';
 import {GettingStartedPage} from './pages/getting-started/getting-started';
 import {CreepypastasPage} from './pages/creepypastas/creepypastas';
 import {CategoriasPage} from './pages/categorias/categorias';
@@ -11,7 +12,7 @@ import {ConfigPage} from './pages/config/config';
 @App({
   templateUrl: 'build/app.html',
   config: {mode: 'md'},
-  providers: [CreepypastasService]
+  providers: [CreepypastasService, UserService]
 })
 class MyApp {
   static get parameters() {

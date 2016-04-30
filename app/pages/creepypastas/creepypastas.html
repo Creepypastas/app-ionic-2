@@ -21,7 +21,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-list>
+  <ion-list no-lines>
     <ion-item *ngFor="#item of filteredCreepypastas" (click)="requestDetailedCreepypasta($event, item)">
       <h2 [innerHTML]="item[1].title"></h2>
       <p>{{ dateFormat(item[1].date, 'mediumDate') }}</p>

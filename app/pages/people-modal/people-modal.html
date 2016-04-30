@@ -24,24 +24,24 @@
   </div>
 
   <div [ngSwitch]="configSegment">
-    <ion-list *ngSwitchWhen="'user'">
+    <ion-list *ngSwitchWhen="'user'" no-lines>
       <ion-item>
         <ion-card>
           <ion-card-header>
             <span secondary>Configura tu cuenta</span>
           </ion-card-header>
           <ion-card-content>
-            Las cuentas de usuario están desactivadas.
+            Las cuentas están desactivadas.
           </ion-card-content>
         </ion-card>
       </ion-item>
       <ion-item>
         <ion-label floating>Usuario</ion-label>
-        <ion-input disabled="true" type="text" [(ngModel)]="user.username"></ion-input>
+        <ion-input disabled="true" type="text" [(ngModel)]="user.credentials.username"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label floating>Contraseña</ion-label>
-        <ion-input disabled="true" type="password" [(ngModel)]="user.password"></ion-input>
+        <ion-input disabled="true" type="password" [(ngModel)]="user.credentials.token"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Recordar</ion-label>
@@ -49,17 +49,17 @@
       </ion-item>
     </ion-list>
 
-    <div *ngSwitchWhen="'team'">
+    <div *ngSwitchWhen="'team'" no-lines>
 
       <ion-card>
         <ion-card-content>
           <ion-card-title>
             <span secondary>Entrar a un clan</span>
           </ion-card-title>
-          <ion-list>
-            <ion-item>
-              <ion-label floating>Nombre del clan</ion-label>
-              <ion-input type="text"></ion-input>
+          <ion-list no-lines>
+            <ion-item no-lines>
+              <ion-label floating no-lines>Nombre del clan</ion-label>
+              <ion-input type="text" no-lines></ion-input>
             </ion-item>
           </ion-list>
         </ion-card-content>
@@ -72,20 +72,16 @@
         </ion-item>
       </ion-card>
 
-
-      <ion-card>
+      <ion-card *ngFor="#clan of user.gangs">
         <ion-card-content>
           <ion-card-title>
-            <span secondary>Clan novatos</span>
+            <span secondary>Clan {{clan.name}}</span>
           </ion-card-title>
-          <div>
-            Eres parte del clan novatos.
-          </div>
         </ion-card-content>
         <ion-item>
           <button primary clear item-left>
             <ion-icon name="people"></ion-icon>
-            <div>827</div>
+            <div>{{clan.people}}</div>
           </button>
           <ion-note  item-right>
             <span danger>
@@ -94,29 +90,6 @@
           </ion-note>
         </ion-item>
       </ion-card>
-
-      <ion-card>
-        <ion-card-content>
-          <ion-card-title>
-            <span secondary>Clan zombi</span>
-          </ion-card-title>
-          <div>
-            Eres parte del clan zombi.
-          </div>
-        </ion-card-content>
-        <ion-item>
-          <button primary clear item-left>
-            <ion-icon name="people"></ion-icon>
-            <div>12</div>
-          </button>
-          <ion-note  item-right>
-            <span danger>
-              Abandonar <ion-icon name="exit"></ion-icon>
-            </span>
-          </ion-note>
-        </ion-item>
-      </ion-card>
-
 
     </div>
   </div>
