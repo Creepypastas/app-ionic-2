@@ -50,6 +50,29 @@
     </ion-list>
 
     <div *ngSwitchWhen="'team'">
+
+      <ion-card>
+        <ion-card-content>
+          <ion-card-title>
+            <span secondary>Entrar a un clan</span>
+          </ion-card-title>
+          <ion-list>
+            <ion-item>
+              <ion-label floating>Nombre del clan</ion-label>
+              <ion-input type="text"></ion-input>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+        <ion-item>
+          <ion-note  item-right>
+            <span danger>
+              Nuevo clan <ion-icon name="add"></ion-icon>
+            </span>
+          </ion-note>
+        </ion-item>
+      </ion-card>
+
+
       <ion-card>
         <ion-card-content>
           <ion-card-title>
@@ -62,7 +85,7 @@
         <ion-item>
           <button primary clear item-left>
             <ion-icon name="people"></ion-icon>
-            <div>827 en el clan</div>
+            <div>827</div>
           </button>
           <ion-note  item-right>
             <span danger>
@@ -84,7 +107,7 @@
         <ion-item>
           <button primary clear item-left>
             <ion-icon name="people"></ion-icon>
-            <div>12 en el clan</div>
+            <div>12</div>
           </button>
           <ion-note  item-right>
             <span danger>
