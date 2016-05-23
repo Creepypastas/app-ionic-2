@@ -47,4 +47,14 @@ export class UserService {
   saveToLF(name, object) {
     this.lf.setItem(name, object);
   }
+
+  startNewGang(newGang) {
+    var newGangRequest = {
+      userCredentials: this.user.credentials,
+      newGang: newGang
+    };
+
+    this.socketService.getSocket().emit('user::startNewGang', newGangRequest);
+  }
+  
 }

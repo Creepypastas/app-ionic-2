@@ -59,13 +59,13 @@
           <ion-list no-lines>
             <ion-item no-lines>
               <ion-label floating no-lines>Nombre del clan</ion-label>
-              <ion-input type="text" no-lines></ion-input>
+              <ion-input type="text" no-lines [(ngModel)]="user.newGang.name"></ion-input>
             </ion-item>
           </ion-list>
         </ion-card-content>
         <ion-item>
           <ion-note  item-right>
-            <span danger>
+            <span danger *ngClick="startNewGang()" >
               Nuevo clan <ion-icon name="add"></ion-icon>
             </span>
           </ion-note>

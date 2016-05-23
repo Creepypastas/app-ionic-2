@@ -22,6 +22,8 @@ export class PeopleModalPage {
       gangs: []
     };
 
+    this.user.newGang = {};
+
     console.debug("app::PeopleModalPage::navParams::", this.navParams);
     this.userCount = this.navParams.get('userCount');
     console.debug("app:PeopleModalPage::userCount::", this.userCount);
@@ -40,6 +42,12 @@ export class PeopleModalPage {
       self.user = userObject;
     });
 
+  }
+
+  startNewGang() {
+    this.userService.startNewGang(
+      this.user.newGang
+    );
   }
 
   close() {
