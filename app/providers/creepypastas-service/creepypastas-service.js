@@ -152,7 +152,7 @@ export class CreepypastasService {
     console.log("app::categories will try json api");
 
     return new Promise(resolve => {
-      this.http.get('https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/categories?fields=ID,slug,name,post_count,description')
+      this.http.get('https://public-api.wordpress.com/rest/v1.1/sites/creepypastas.com/categories?fields=ID,slug,name,post_count,description')
         .map(res => res.json())
         .subscribe(
           response => {
@@ -200,7 +200,7 @@ export class CreepypastasService {
   }
 
   loadSinglePost(postID){
-    var apiURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/';
+    var apiURL = 'https://public-api.wordpress.com/rest/v1.1/sites/creepypastas.com/posts/';
     apiURL+=postID;
     apiURL+='?fields=ID,title,date,categories,status,content';
     console.debug(apiURL);
@@ -271,7 +271,7 @@ export class CreepypastasService {
       }
       return Promise.resolve(this.filterCreepypastas(searchCriteria));
     }
-    var requestURL = 'https://public-api.wordpress.com/rest/v1/sites/creepypastas.com/posts/?number=100&fields=ID,title,date,categories,status';
+    var requestURL = 'https://public-api.wordpress.com/rest/v1.1/sites/creepypastas.com/posts/?number=100&fields=ID,title,date,categories,status';
     if(!searchCriteria.thisIsPreload){
       requestURL+= ',content';
     }
