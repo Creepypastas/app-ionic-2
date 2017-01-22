@@ -521,31 +521,26 @@ ion-row {
     -webkit-box-align: start;
     -webkit-align-items: flex-start;
     -ms-flex-align: start;
-    -ms-grid-row-align: flex-start;
     align-items: flex-start; }
   ion-row[bottom] {
     -webkit-box-align: end;
     -webkit-align-items: flex-end;
     -ms-flex-align: end;
-    -ms-grid-row-align: flex-end;
     align-items: flex-end; }
   ion-row[center] {
     -webkit-box-align: center;
     -webkit-align-items: center;
     -ms-flex-align: center;
-    -ms-grid-row-align: center;
     align-items: center; }
   ion-row[stretch] {
     -webkit-box-align: stretch;
     -webkit-align-items: stretch;
     -ms-flex-align: stretch;
-    -ms-grid-row-align: stretch;
     align-items: stretch; }
   ion-row[baseline] {
     -webkit-box-align: baseline;
     -webkit-align-items: baseline;
     -ms-flex-align: baseline;
-    -ms-grid-row-align: baseline;
     align-items: baseline; }
 
 ion-row + ion-row {
@@ -571,10 +566,12 @@ ion-col {
   ion-col[center] {
     -webkit-align-self: center;
     -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
     align-self: center; }
   ion-col[stretch] {
     -webkit-align-self: stretch;
     -ms-flex-item-align: stretch;
+    -ms-grid-row-align: stretch;
     align-self: stretch; }
   ion-col[baseline] {
     -webkit-align-self: baseline;
@@ -5673,7 +5670,6 @@ ion-textarea {
   -webkit-box-align: stretch;
   -webkit-align-items: stretch;
   -ms-flex-align: stretch;
-  -ms-grid-row-align: stretch;
   align-items: stretch; }
 
 .text-input {
@@ -5886,7 +5882,6 @@ ion-input.item {
   -webkit-box-align: start;
   -webkit-align-items: flex-start;
   -ms-flex-align: start;
-  -ms-grid-row-align: flex-start;
   align-items: flex-start; }
 
 .item > ion-icon[small]:first-child,
@@ -6169,6 +6164,7 @@ ion-label[stacked],
 ion-label[floating] {
   -webkit-align-self: stretch;
   -ms-flex-item-align: stretch;
+  -ms-grid-row-align: stretch;
   align-self: stretch;
   margin-bottom: 0;
   width: auto;
@@ -6190,6 +6186,7 @@ ion-label[floating] {
 .item-label-floating ion-select {
   -webkit-align-self: stretch;
   -ms-flex-item-align: stretch;
+  -ms-grid-row-align: stretch;
   align-self: stretch;
   max-width: 100%; }
 
@@ -7083,6 +7080,7 @@ tabbar {
   overflow: hidden;
   -webkit-align-self: center;
   -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
   align-self: center;
   min-width: 26px;
   max-width: 100%;
